@@ -20,7 +20,7 @@ import configure
 sys.path.append("..")
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 sys.setrecursionlimit(2000000)
 import torch._utils
 try:
@@ -115,7 +115,10 @@ def train(data, save_model_dir):
     if weight is None:
         loss_fn = torch.nn.CrossEntropyLoss()
     else:
-        weight = torch.cuda.FloatTensor(weight)
+        if data.HP_gpu:
+            weight = torch.cuda.FloatTensor(weight)
+        else:
+            weight = torch.FloatTensor(weight)
         loss_fn = torch.nn.CrossEntropyLoss(weight=weight)
 
     for idx in range(data.HP_iteration):
